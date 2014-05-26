@@ -1,0 +1,28 @@
+INLPD - Weblinks-Collection
+===========================
+
+BeagleBone UdK Project: 
+https://github.com/redFrik/udk11-Portable_sonification_projects
+
+GSR sensor DIY
+http://makezine.com/projects/the-truth-meter-2/
+http://theanthillsocial.co.uk/projects/biosensing
+http://ftmedia.eu/diy-gsr-sensor/
+http://www.instructables.com/id/Stress-Makes-Art-Galvanic-Skin-Response-and-Visual/
+http://www.extremenxt.com/blog/?page_id=168
+http://www.media.mit.edu/galvactivator/faq.html
+http://www.ledalab.de/ 
+
+Conor Barrys Beatback Instrument: 
+http://conorbarry.me/BeatBack
+http://www.synthtopia.com/content/tag/galvanic-skin-response/     
+His MakeLabProject: 
+http://electroniclunch.wordpress.com/
+
+DIY Pulse Sensor: 
+http://pulsesensor.myshopify.com/
+
+Augmented Ears Projects:
+http://mutantears.blogspot.co.uk/
+http://www.jiwonyoonworks.com/?cat=1
+http://vimeo.com/81467415

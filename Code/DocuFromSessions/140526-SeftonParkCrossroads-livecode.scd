@@ -15,7 +15,7 @@ Ndef(\crossroads, {arg rate=0.1, amp=1, freq=200, bass=0.3;
 	rand = TRand.kr(0.1, 10, Dust.kr(rate));
 	mod = [LFSaw.kr(rate*rand).range(0.5,2), LFTri.kr(rate*rand, 1).range(0.5,2)]@0;
 	filt = BBandPass.ar(son, freq * mod, 0.1,  LFNoise1.kr(rate)).softclip;
-	son = Pan2.ar(filt, LFNoise1.kr(rate), amp) + BLowPass.ar(son, freq/3, 1, bass);
+	son = Pan2.ar(filt, LFNoise1.kr(LFNoise0.kr(rate)), amp) + BLowPass.ar(son, freq/3, 1, bass);
 	son
 })
 )
@@ -34,7 +34,7 @@ Ndef(\crossroadsB, { arg freq=1000, rate=13, amp=0.5;
 )
 
 
-Ndef(\crossroadsB).set(\freq, 200);
+Ndef(\crossroadsB).set(\freq, 1000);
 Ndef(\crossroadsB).unset(\freq);
 
 Ndef(\crossroadsB)[1] = \set -> Pbind(
@@ -42,6 +42,7 @@ Ndef(\crossroadsB)[1] = \set -> Pbind(
 	\dur, 5);
 
 Ndef(\crossroadsB).end(10);
+Ndef(\crossroads).end(10);
 
 
 
@@ -59,13 +60,14 @@ Ndef(\inChan).play;
 Ndef(\inChan, {arg freq=300, mul=1; HPF.ar(Pan2.ar(SoundIn.ar(0,1)), 180, mul)});
 Ndef(\inChan, {arg freq=300, mul=1; BRF.ar(HPF.ar(Pan2.ar(SoundIn.ar(0,1)), 180, mul), freq, 2)});
 
+NdefMixer(s)
 // filter it!
 (
 Ndef(\inChan, {
-	arg mul=1, freq1=300, rq1=2, mul1=1,
-	freq2=1200, rq2=0.7, mul2=1,
-	freq3 = 1200, rq3=0.7, mul3=1,
-	freq4 = 600, rq4=1.2, mul4=1,
+	arg mul=1, freq1=1300, rq1=2, mul1=1,
+	freq2=200, rq2=0.7, mul2=1,
+	freq3 = 5400, rq3=0.7, mul3=2,
+	freq4 = 100, rq4=1.2, mul4=0.6,
 	dry=0.5;
 
 	var in = Pan2.ar(SoundIn.ar(0,1));
@@ -74,7 +76,7 @@ Ndef(\inChan, {
 	var reso1 = Resonz.ar(filt, freq2, 0.7, mul2);
 	var reso2 = Resonz.ar(filt, freq3, 0.7, mul3);
 	var reso3 = Resonz.ar(filt, freq4, rq3, mul4);
-	(in*dry) + reso1 + reso2 + reso3
+	(hpf*dry) + reso1 + reso2 + reso3
 });
 )
 

@@ -3,7 +3,7 @@
 
 
 (
-SynthDef(\prayer_bell, { |outbus, t_trig = 1, sing_switch = 0, freq = 2434, amp = 0.5, decayscale = 1, lag = 10, i_doneAction = 0|
+SynthDef(\prayer_bell, { |outbus, t_trig = 1, sing_switch = 0, freq = 2434, amp = 0.4, decayscale = 1, lag = 10, i_doneAction = 0|
   var sig, input, first, freqscale, mallet, sing;
   freqscale = freq / 2434;
   freqscale = Lag3.kr(freqscale, lag);
@@ -66,10 +66,11 @@ SynthDef(\prayer_bell, { |outbus, t_trig = 1, sing_switch = 0, freq = 2434, amp 
     ] * freqscale.reciprocal.pow(0.5)
   ], input, freqscale, 0, decayscale);
   DetectSilence.ar(sig, doneAction: i_doneAction);
-  Out.ar(outbus, sig);
+  Out.ar(outbus, sig * amp);
 }).add;
 )
 
+Synth(\prayer_bell, [\amp, 0.4]);
 
 (
 Pdef(\bell_1,
@@ -119,12 +120,15 @@ Pdef(\bell_3,
   ])
 );
 
+(
 Pdef(\bell_1).play;
 Pdef(\bell_2).play;
 Pdef(\bell_3).play;
+)
+
+);
 
 Pdef.all.keys.do{|key| Pdef(key).fadeTime=10;};
 Pdef.all.keys.do{|key| Pdef(key).play};
 Pdef.all.keys.do{|key| Pdef(key).stop};
 
-)

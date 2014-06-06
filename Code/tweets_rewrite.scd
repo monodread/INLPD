@@ -2,8 +2,8 @@
 s.meter;
 s.freqscope;
 NdefMixer.new(s);
-Ndef(\tweet).play;
 
+Ndef(\tweet).play;
 
 (
 // reminds of motor, shifting gears

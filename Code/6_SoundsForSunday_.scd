@@ -58,22 +58,22 @@ Synth(\crackle, [\hpfreq, 1000, \amp, 5]);
 
 
 (
-SynthDef(\bubbleAna, { |out, freq=400, sustain=2, rise=2, amp=0.1|
+SynthDef(\bubbleAna, { |out, freq=400, sustain=2, rise=2, amp=0.5|
 	var son, env, gliss, root;
 	root = freq.cpsmidi;
 	gliss = LFSaw.kr(sustain.reciprocal, 0, rise*12, LFSaw.kr([8, 7.23],0, rise, root) ).midicps; // glissando function
 	son = SinOsc.ar(gliss, mul:amp); // using sine wave
 	son = CombN.ar(son, 0.2, 0.2, 1); // add an echo
-	env = EnvGen.kr(Env.sine(sustain*0.8), doneAction:2);
+	env = EnvGen.kr(Env.linen, timeScale:sustain, doneAction:2);
 	Out.ar(out, son * env * amp);
 }).add;
 
 )
 /*
-Synth(\bubbleAna, [\sustain, 3, \rise, 2])
+Synth(\bubbleAna, [\freq, 100, \sustain, 1, \rise, 3])
 */
 
-
+////////////////////////////////////
 (
 // Dark Ambience
 SynthDef(\darkAmb, { |out, freq=55, sustain=10, amp=0.2|
@@ -94,6 +94,8 @@ Synth(\darkAmb)
 
 ///////////////////////////////////////////
 // NDEFS
+
+NdefMixer.new(s);
 
 Ndef(\darkAmb).play;
 (
@@ -138,8 +140,9 @@ Spec.add(\noisevol, [0.1, 30.0, \exp]);*/
 );
 
 
-(
+
 Ndef(\seacanons).play;
+(
 Ndef(\seacanons, { |amp=0.5, freq=130, pulseFreq=0.5, delay=0.2, fbQ=2|
 		var son, delayTime, delayAdd = 0.1, numOfEchos=3, mainPulse, proxy, ampModFreq, ampMod;
 		mainPulse = LFPulse.ar(LFNoise0.kr(pulseFreq).abs, 0, 0.1).range(freq/3, freq);
@@ -159,20 +162,36 @@ Ndef(\seacanons, { |amp=0.5, freq=130, pulseFreq=0.5, delay=0.2, fbQ=2|
 
 (
 // sccode by sadguitarius, rewritten and modded
-Ndef(\ocean, { |amp=0.1|
+Ndef(\ocean, { |amp=1|
 	var src, freqs;
 	freqs = 1/[ 8, 10, 12, 14 ];
 	src = WhiteNoise.ar(0.1)+Dust.ar(100, 0.5) * Line.kr(0,1,5);
 	src = OnePole.ar(src, 0.7, LFTri.ar(LFNoise1.kr(0.5).exprange(0.01,1)).exprange(0.5,1));
-	src + Splay.ar(FreqShift.ar(src, freqs));
+	src = src + Splay.ar(FreqShift.ar(src, freqs));
+	src * amp
 }).play
 )
 
 
+
+///////////////////////////////////
+
+Ndef(\monitor).play;
+
+(
+Ndef(\monitor, { |amp=1|
+	// read 4 input channels from 3 upwards
+	// needs inFeedback or not?
+	SelectX.ar(MouseX.kr(0,3).round(1), [InFeedback.ar(3), InFeedback.ar(4), InFeedback.ar(5), InFeedback.ar(6)]) * amp
+})
+)
+
+Ndef(\monitor)[1] = \filter -> {|in, freq| LPF.ar(in, freq)}
+
 //////////////////////////////
 // TO DO  still
 
-
+/*
 // blowing ambient with lots reverb
 // by rukano
 fork{
@@ -253,3 +272,5 @@ fork{
 	}
 }
 )
+
+*/

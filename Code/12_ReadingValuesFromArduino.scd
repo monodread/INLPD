@@ -29,7 +29,10 @@ NdefMixer.new(s); // create a mixer for our ndef-sounds
 TdefAllGui.new; // create a GUI to see the Tdefs which are running.
 s.meter; // creates a meter View to see wether sound is playing
 s.freqscope; // creates a frequency View of the output
-// find your port:SerialPort.listDevices;
+
+/* find your port:
+SerialPort.listDevices;
+*/
 q.myPort = "/dev/tty.usbserial-A900abYo"; // put your SerialPort Name here
 q.baudrate = 115200; // arduino sketch is running Serial communication on this speed!
 
@@ -40,7 +43,6 @@ q.baudrate = 115200; // arduino sketch is running Serial communication on this s
 /////////////////////////////////////
 
 (
-Ndef(\fakeGSR, { |min=0, max=380| MouseY.kr(min, max); }); // not needed currently, create values using the mouse...
 Ndef(\monitor).play;
 Ndef(\darkAmb).play;
 Ndef(\crossroads).play;
@@ -211,9 +213,11 @@ Ndef(\crossroads, {arg rate=0.1, amp=1, freq=200, bass=0.3;
 
 (
 p.close; // close port, if already opened
-p = ArduinoSMS("/dev/tty.usbserial-A900abYo", 115200); // OPEN ONCE
+p = ArduinoSMS(q.myPort, q.baudrate); // OPEN ONCE
+
 // p.action = { |... msg| msg.postln; }; // define what happens when calling the port, here: just post
-// action should write to buses
+
+// p.action should write to buses
 p.action = { |... msg| "[sensor1: %,\t sensor2: %,\t sensor3: %,\t sensor4: %]\n".postf(msg[1],msg[2],msg[3], msg[4]); b.set(msg[1],msg[2],msg[3],msg[4])};
 // p.action = nil; // no actions!
 
@@ -227,7 +231,7 @@ Tdef(\getAna, {
 })
 )
 
-Tdef(\getAna).play;
+Tdef(\getAna).play; // start the value-getting routine
 
 );
 
@@ -249,10 +253,11 @@ p.send($r, $s);
 /////////////////////////////////////
 
 
-// if Port fails, then clean up
+/* if Port fails, then clean up
 Tdef(\getAna).stop; p.close; Ndef(\monitor).set(\amp, 0);
 // and then reopen port and start reading routine again
 p = ArduinoSMS("/dev/tty.usbserial-A900abYo", 115200); Tdef(\getAna).play;
+*/
 
 // put new actions in -> write to Buses and set the Tdefs!
 (
@@ -260,9 +265,9 @@ try{
 p.action = { |... msg|
 	var busval;
 	//posting
-	"[sensor1: %,\t sensor2: %,\t sensor3: %,\t sensor4: %]\n".postf(msg[1],msg[2],msg[3],msg[4]);
+	"[sensor1: %,\t sensor2: %,\t sensor3: %,\t sensor4: %]\n".postf(msg[1],msg[2],msg[3],msg[4]); // uncomment THIS line to NOT get any value postings
 	busval = msg[1].linexp(0,400,0.1,4).wrap(0,4);
-	busval.postln;
+	// busval.postln;
 	b.set(
 		busval,
 		msg[1].wrap(0,4),
@@ -294,6 +299,8 @@ Ndef(\darkAmb).stop;
 Ndef(\crossroads).stop;
 
 Ndef(\monitor).stop;
+p.close;
+b.free;
 );
 
 

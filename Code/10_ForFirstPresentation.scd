@@ -9,7 +9,7 @@ one fingers: about 10,20,30,40,50-60 (but federica was 1..15)
 */
 ////////////////////////////////////
 (
-q = ();
+q = q ? ();
 b = Bus.control(s, 4);
 NdefMixer.new(s);
 TdefAllGui.new;
@@ -47,9 +47,9 @@ p.send($r, $a);
 Tdef(\getAna, {
 	inf.do{
 		p.send($r, $a);
-		0.1.wait;
+		0.2.wait;
 	}
-}).play
+})
 )
 Tdef(\getAna).stop;
 
@@ -69,7 +69,7 @@ Ndef(\crossroads).end;
 // if Port fails, clean up and recreate!
 Tdef(\getAna).stop; p.close; Ndef(\monitor).set(\amp, 0);
 
-p = ArduinoSMS("/dev/tty.usbserial-A900abYo", 115200); // OPEN ONCE
+p = ArduinoSMS(q.myPort, q.baudrate); // OPEN ONCE
 Tdef(\getAna).play;
 // put actions in, // write to Buses and set Tdefs!
 (

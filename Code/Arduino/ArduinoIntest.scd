@@ -72,7 +72,7 @@ Ndef(\testsine).stop
 
 (
 Ndef(\testsine, {|freq=440, amp=1| var sensorIn = In.kr(b.index); freq = sensorIn.linexp(0,400, 200,6000);
-	SinOsc.ar(freq.poll, 0, sensorIn.linlin(0,100,0.001,1)).softclip * amp}).play
+	SinOsc.ar(freq, 0, sensorIn.linlin(0,100,0.001,1)).softclip * amp}).play
 )
 
 // thor reading loop

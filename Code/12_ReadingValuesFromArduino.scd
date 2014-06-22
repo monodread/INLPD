@@ -83,7 +83,7 @@ SynthDef('grainXLine', { arg out = 0, freq=800, sustain=0.01, amp=0.5, pan = 0.0
 				pan
 			)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -96,7 +96,7 @@ SynthDef('grain_interpret', { arg out = 0, freq=800, sustain=0.01, amp=0.5, prea
 			SinOsc.ar(pitch, 0, preamp**3).tanh
 			* EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 (
 SynthDef('hatXLRev', { arg out = 0, freq=8000, sustain=0.01, amp=0.5, pan = 0.0;
@@ -109,7 +109,7 @@ SynthDef('hatXLRev', { arg out = 0, freq=8000, sustain=0.01, amp=0.5, pan = 0.0;
 				3
 			) * EnvGen.ar(window, doneAction:2)
 		)
-}).share;
+}).add;
 );
 
 
@@ -256,7 +256,7 @@ p.send($r, $s);
 /* if Port fails, then clean up
 Tdef(\getAna).stop; p.close; Ndef(\monitor).set(\amp, 0);
 // and then reopen port and start reading routine again
-p = ArduinoSMS("/dev/tty.usbserial-A900abYo", 115200); Tdef(\getAna).play;
+p = ArduinoSMS(q.myPort, q.baudrate); Tdef(\getAna).play;
 */
 
 // put new actions in -> write to Buses and set the Tdefs!

@@ -40,7 +40,7 @@ SerialPort.listDevices;
 (
 q.myPort = "/dev/tty.usbserial-A900abYo"; // put your SerialPort Name here
 q.baudrate = 115200; // arduino sketch is running Serial communication on this speed!
-
+q.maxValue =  850;
 )
 
 /////////////////////////////////////
@@ -217,7 +217,9 @@ Ndef(\crossroads, {arg rate=0.1, amp=1, freq=200, bass=0.3;
 /////////////////////////////////////
 
 (
+/* 
 p.close; // close port, if already opened
+*/ 
 p = ArduinoSMS(q.myPort, q.baudrate); // OPEN ONCE
 
 // p.action = { |... msg| msg.postln; }; // define what happens when calling the port, here: just post
@@ -275,7 +277,8 @@ p.action = { |... msg|
 	var busval;
 	//posting
 	"[sensor1: %,\t sensor2: %,\t sensor3: %,\t sensor4: %]\n".postf(msg[1],msg[2],msg[3],msg[4]); // uncomment THIS line to NOT get any value postings
-	busval = msg[1].linexp(0,400,0.1,4).wrap(0,4);
+	// busval = msg[1].linexp(0,q.maxValue,0.1,4).wrap(0,4); // dynamic sound selection by touch
+	busval = 0; // "hardcoded" soundselection here
 	// busval.postln;
 	b.set(
 		busval,
@@ -283,14 +286,14 @@ p.action = { |... msg|
 		msg[2],msg[3],msg[4]);
 	if((msg[1]+msg[2]+msg[3]+msg[4] > 0), {Ndef(\monitor).set(\amp, 1);}, {Ndef(\monitor).set(\amp, 0)});
 	// vary the sounds:
-	Tdef(\poltergeist).set(\dir, msg[2].linlin(0,150,0,1), \freq, msg[3].linexp(0,150,130,2000), \sustain, msg[4].linlin(0,150,0.1,4));
+	Tdef(\poltergeist).set(\dir, msg[2].linlin(0,q.maxValue,0,1), \freq, msg[3].linexp(0,q.maxValue,130,2000), \sustain, msg[4].linlin(0,q.maxValue,0.1,4));
 
-	Tdef(\blips).set(\freq, 200, \distort, msg[2].linexp(0,150,1,30), \sustain, msg[3].linexp(0,150,0.01,1.5), \waittime, msg[4].linlin(0,150,2,0.1));
+	Tdef(\blips).set(\freq, 200, \distort, msg[2].linexp(0,q.maxValue,1,30), \sustain, msg[3].linexp(0,q.maxValue,0.01,1.5), \waittime, msg[4].linlin(0,q.maxValue,2,0.1));
 
-	Ndef(\darkAmb).set(\revtime, msg[2].linlin(0,150,0.1,80), \freq, msg[3].linlin(0,150,130,1000), \noise, msg[4].linexp(0,150,0.1,50));
+	Ndef(\darkAmb).set(\revtime, msg[2].linlin(0,q.maxValue,0.1,80), \freq, msg[3].linlin(0,q.maxValue,130,1000), \noise, msg[4].linexp(0,q.maxValue,0.1,50));
 
-	Ndef(\crossroads).set(\rate, msg[2].linexp(0,150,0.1,30), \freq, msg[3].linexp(0,150,100,4000), \bass, msg[4].linlin(0,150,0,2.0));
-
+	Ndef(\crossroads).set(\rate, msg[2].linexp(0,q.maxValue,0.1,30), \freq, msg[3].linexp(0,q.maxValue,100,4000), \bass, msg[4].linlin(0,q.maxValue,0,2.0));
+q.maxValue
 	};
 
 );

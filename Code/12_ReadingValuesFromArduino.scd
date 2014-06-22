@@ -232,7 +232,7 @@ p.action = { |... msg| "[sensor1: %,\t sensor2: %,\t sensor3: %,\t sensor4: %]\n
 (
 Tdef(\getAna, {
 	inf.do{
-		p.send($r, $s);
+		p.send($r, $a);
 		0.25.wait; // new readings every quarter second
 	}
 })
@@ -280,11 +280,16 @@ p.action = { |... msg|
 	// busval = msg[1].linexp(0,q.maxValue,0.1,4).wrap(0,4); // dynamic sound selection by touch
 	busval = 0; // "hardcoded" soundselection here
 	// busval.postln;
+	
+	// write values to bus
 	b.set(
 		busval,
 		msg[1].wrap(0,4),
 		msg[2],msg[3],msg[4]);
-	if((msg[1]+msg[2]+msg[3]+msg[4] > 0), {Ndef(\monitor).set(\amp, 1);}, {Ndef(\monitor).set(\amp, 0)});
+	
+	// play sound or not
+	if((msg[1]+msg[2]+msg[3]+msg[4] > 50), {Ndef(\monitor).set(\amp, 1);}, {Ndef(\monitor).set(\amp, 0)});
+	
 	// vary the sounds:
 	Tdef(\poltergeist).set(\dir, msg[2].linlin(0,q.maxValue,0,1), \freq, msg[3].linexp(0,q.maxValue,130,2000), \sustain, msg[4].linlin(0,q.maxValue,0.1,4));
 

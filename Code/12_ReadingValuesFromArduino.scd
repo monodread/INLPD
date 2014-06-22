@@ -29,10 +29,15 @@ NdefMixer.new(s); // create a mixer for our ndef-sounds
 TdefAllGui.new; // create a GUI to see the Tdefs which are running.
 s.meter; // creates a meter View to see wether sound is playing
 s.freqscope; // creates a frequency View of the output
+);
 
-/* find your port:
+/////////////////////////////////////
+// CHANGE YOUR PORT BELOW
+/////////////////////////////////////
+/* to find your port:
 SerialPort.listDevices;
 */
+(
 q.myPort = "/dev/tty.usbserial-A900abYo"; // put your SerialPort Name here
 q.baudrate = 115200; // arduino sketch is running Serial communication on this speed!
 
@@ -252,6 +257,11 @@ p.send($r, $s);
 // SETUP CONTROLS 2: Sound mapping to Input
 /////////////////////////////////////
 
+(
+Tdef(\poltergeist).play;
+Tdef(\blips).play;
+Ndef(\darkAmb).end(4);
+Ndef(\crossroads).end(4);
 
 /* if Port fails, then clean up
 Tdef(\getAna).stop; p.close; Ndef(\monitor).set(\amp, 0);
@@ -261,7 +271,6 @@ p = ArduinoSMS(q.myPort, q.baudrate); Tdef(\getAna).play;
 
 // put new actions in -> write to Buses and set the Tdefs!
 (
-try{
 p.action = { |... msg|
 	var busval;
 	//posting
@@ -283,9 +292,10 @@ p.action = { |... msg|
 	Ndef(\crossroads).set(\rate, msg[2].linexp(0,150,0.1,30), \freq, msg[3].linexp(0,150,100,4000), \bass, msg[4].linlin(0,150,0,2.0));
 
 	};
-};
+
 );
 
+);
 
 ////////////////////////
 // Switch things off

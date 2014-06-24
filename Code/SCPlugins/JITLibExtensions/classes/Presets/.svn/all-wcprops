@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/p/quarks/code/!svn/ver/2734/JITLibExtensions/classes/Presets
+END
+NdefPreset.sc
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/quarks/code/!svn/ver/2734/JITLibExtensions/classes/Presets/NdefPreset.sc
+END
+ProxyPreset.sc
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/quarks/code/!svn/ver/2734/JITLibExtensions/classes/Presets/ProxyPreset.sc
+END
+ProxyPresetGui.sc
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/p/quarks/code/!svn/ver/2734/JITLibExtensions/classes/Presets/ProxyPresetGui.sc
+END
+TaskProxyPresets.sc
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/quarks/code/!svn/ver/2734/JITLibExtensions/classes/Presets/TaskProxyPresets.sc
+END

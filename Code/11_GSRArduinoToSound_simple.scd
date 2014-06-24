@@ -29,8 +29,9 @@ Tdef(\getValues, {
 );
 
 // simple sine wave to play
-
+NdefMixer.new(s)
 Ndef(\testsine).play;
+q = ();
 (
 Ndef(\testsine, {|pan=0, vol=1|
 	var mod, amp, freq;

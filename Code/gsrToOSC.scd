@@ -4,13 +4,14 @@
 s.waitForBoot({
 
 	// n = NetAddr("194.95.203.235", 57120); // your computers IP here
-	n = NetAddr("127.0.0.1", 57120); // or localhost
+	n = NetAddr("127.0.0.1", NetAddr.langPort); // or localhost
+	n = NetAddr("127.0.0.1", 57122); // or localhost
 
 	(
 		Tdef(\fakeGSR, {
 			inf.do{
-//				n.sendMsg("/gsr", rrand(200,400));
-				n.sendMsg("/gsr", [1,2,3]);
+				n.sendMsg("/gsr", rrand(0,1.0),rrand(0,1.0),rrand(0,1.0),rrand(0,1.0));
+//				n.sendMsg("/gsr", 1,2,3);
 				rrand(0.1,0.5).wait;
 			}
 		}).play

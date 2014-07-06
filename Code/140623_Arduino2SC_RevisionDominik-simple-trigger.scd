@@ -1,11 +1,8 @@
 
-SerialPort.closeAll; // close all opened ports, takes 2 sec!
-
 (
+SerialPort.closeAll; // close all opened ports
 q = q ? ();
-SerialPort.devicePattern = "/dev/tty.usb*";
-q.myPort = SerialPort.devices[0];
-//q.myPort = "/dev/tty.usbserial-A900abYo";
+q.myPort = "/dev/tty.usbserial-A900abYo";
 q.baudrate = 115200;
 q.myInterface = ArduinoSMS(q.myPort, q.baudrate); // OPEN ONCE
 
@@ -24,10 +21,10 @@ q.myInterface.action = { |... msg|
 	var trig = ((myVals[0] > q.trig0tresh) && (q.arduinoOldVals[0] < q.trig0tresh));
 	//simple posting
 		 //msg.postln;
-	myVals.round(0.01).postln;
+		 //myVals.postln;
 		 //trig.postln;
 
-//	if(trig)  { "neuer trigger!".postln; Ndef(\perc).set(\t_trig, 1);};
+	if(trig)  { "neuer trigger!".postln; Ndef(\perc).set(\t_trig, 1);};
 
 	q.arduinoOldVals = myVals;
 

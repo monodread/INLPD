@@ -1,6 +1,6 @@
 
 
-// REPUBLIC - all shared synthdefs
+// REPUBLIC - all synthdefs
 
 (
 SynthDef('bubble', { |out, sustain = 0.01, freq = 2000, rise = 4, amp = 1, pan|
@@ -11,7 +11,7 @@ SynthDef('bubble', { |out, sustain = 0.01, freq = 2000, rise = 4, amp = 1, pan|
 			pan, amp
 		)
 	)
-}).share;
+}).add;
 );
 
 (
@@ -29,7 +29,7 @@ SynthDef('deepsea', { arg out, pan=0, amp=0.1, variation=0.9;
 	son = BPF.ar(son, freq * (count % LFNoise1.kr(1).range(2, 20) + 1), 0.2);
 	DetectSilence.ar(son, doneAction:2);
 	Out.ar(out, Pan2.ar(son, pan, amp * 10));
-}).share;
+}).add;
 );
 
 (
@@ -42,7 +42,7 @@ SynthDef('delta_demand2', { arg out=0, start=0.05, grow=0.93, num=20, freq=1000,
 			dcy, amp
 		)
 	)
-}).share;
+}).add;
 );
 
 (
@@ -51,7 +51,7 @@ SynthDef('dirac', { arg out=0, amp=1.0, pan=0, sustain = 1;
 	trig = Impulse.ar(1);
 	FreeSelf.kr(trig);
 	OffsetOut.ar(out, Pan2.ar(trig * amp, pan))
-}).share;
+}).add;
 );
 
 (
@@ -68,7 +68,7 @@ SynthDef('feedDriftComb', { arg freq = 3500, sustain= 2.0, amp = 3, out=0;
 			 )
 		*  EnvGen.kr(env, levelScale: amp, timeScale: sustain, doneAction: 2);
 		);
-}).share;
+}).add;
 );
 
 (
@@ -88,7 +88,7 @@ SynthDef('feedDriftComb2', { arg freq = 3500, sustain= 2.0, amp = 1, driftFreq=2
 			)
 		*  EnvGen.kr(env, levelScale: amp, timeScale: sustain, doneAction: 2);
 		);
-}).share;
+}).add;
 );
 
 (
@@ -105,7 +105,7 @@ SynthDef('feedDriftComb3', { arg freq = 3500, sustain= 2.0, amp = 3, out=0;
 			 )
 		*  EnvGen.kr(env, levelScale: amp, timeScale: sustain, doneAction: 2);
 		);
-}).share;
+}).add;
 );
 
 (
@@ -118,7 +118,7 @@ SynthDef('feedScaleFreqs', { arg freq = 1000, freq2 = 5000, sustain= 2.0, out=0;
 			AudioIn.ar([1,2]) * Pulse.ar(freq2 - freq * follower + freq)
 			* EnvGen.ar(env, levelScale: 4, timeScale: sustain, doneAction: 2);
 	)
-}).share;
+}).add;
 );
 
 (
@@ -134,7 +134,7 @@ SynthDef('filling', {|out, amp = 0.1, p0 = 0, p1 = 1, sustain = 10,
 	// son = son * ToggleFF.kr(Dust.kr(20), 0.3, 0.5);
 	Out.ar(out, son * amp);
 
-}).share;
+}).add;
 );
 
 (
@@ -149,7 +149,7 @@ SynthDef('glisson', { arg out = 0, freq=800, freq2=1200, sustain=0.01, amp=0.5, 
 			)
 			* EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -162,7 +162,7 @@ SynthDef('grain', { arg out = 0, freq=800, sustain=0.01, amp=0.5, pan = 0;
 				pan
 			) * EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -175,7 +175,7 @@ SynthDef('grainLine', { arg out = 0, freq=800, sustain=0.01, amp=0.5, pan = 0.0;
 				pan
 			) * EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -188,7 +188,7 @@ SynthDef('grainSine', { arg out = 0, freq=800, sustain=0.01, amp=0.5, pan = 0;
 				pan
 			) * EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -201,7 +201,7 @@ SynthDef('grainXLine', { arg out = 0, freq=800, sustain=0.01, amp=0.5, pan = 0.0
 				pan
 			)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -214,7 +214,7 @@ SynthDef('grainXLRev', { arg out = 0, freq=800, sustain=0.01, amp=0.5, pan = 0.0
 				pan
 			) * EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -227,7 +227,7 @@ SynthDef('grain_interpret', { arg out = 0, freq=800, sustain=0.01, amp=0.5, prea
 			SinOsc.ar(pitch, 0, preamp**3).tanh
 			* EnvGen.ar(window, doneAction:2)
 		)
-	}).share;
+	}).add;
 );
 
 (
@@ -241,7 +241,7 @@ SynthDef('hatXLine', { arg out = 0, freq=8000, sustain=0.01, amp=0.5, pan = 0.0;
 				3
 			) * EnvGen.ar(window, doneAction:2)
 		)
-}).share;
+}).add;
 );
 
 (
@@ -255,7 +255,7 @@ SynthDef('hatXLRev', { arg out = 0, freq=8000, sustain=0.01, amp=0.5, pan = 0.0;
 				3
 			) * EnvGen.ar(window, doneAction:2)
 		)
-}).share;
+}).add;
 );
 
 (
@@ -269,13 +269,13 @@ SynthDef('klankinger', { arg out=0, i_freq=200, trig=1, att=0.2, dcy=2, ffreq=20
 	klank = LPF.ar(klank, ffreq + SinOsc.kr([3,4],0, 300, 1000));
 	env = EnvGen.kr( Env.new([0,1,0],[att, dcy]), trig, doneAction:2);
 	Out.ar(out, klank * env * ampl);
-}).share;
+}).add;
 );
 
 (
 SynthDef('MUTE', { |dur = 3|
 	ReplaceOut.ar(0, Silent.ar(2)) * Line.kr(0.001, 0.001, dur, doneAction: 2)
-}).share;
+}).add;
 );
 
 (
@@ -285,7 +285,7 @@ SynthDef('outlet1', { |out, amp=0.1, sustain=5, freq=5000|
 	son = Resonz.ar(WhiteNoise.ar(0.5.dup), energy.linlin(1, 0, freq, freq * 0.2), 0.4);
 	Out.ar(out, son * energy)
 
-}).share;
+}).add;
 );
 
 (
@@ -299,7 +299,7 @@ SynthDef('press', { |out, amp = 0.1, p0 = 1, p1 = 0, sustain = 10, freq = 4000, 
 	son = Ringz.ar(son, freq, 0.01);
 
 	Out.ar(out, son * pressure * (amp * 10))
-}).share;
+}).add;
 );
 
 (
@@ -315,7 +315,7 @@ SynthDef('press2', { |out, amp = 0.1, p0 = 1, p1 = 0, sustain = 10, freq = 4000,
 	son = Ringz.ar(son, freq, 0.01);
 	son = son + map.sum;
 	Out.ar(out, son * pressure * (amp * 5))
-}).share;
+}).add;
 );
 
 (
@@ -334,5 +334,5 @@ SynthDef('ur2', { |out, amp=0.2, pan, sustain=0.3,
 			pan
 		) * EnvGen.ar(Env.linen(*(sustain * [0.05, 0.8, 0.15] ++ amp)), doneAction: 2)
 	);
-}).share;
+}).add;
 );

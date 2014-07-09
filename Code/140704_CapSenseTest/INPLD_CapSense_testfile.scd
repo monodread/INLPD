@@ -1,3 +1,4 @@
+
 SerialPort.closeAll; // close all opened ports, takes 2 sec!
 
 (
@@ -29,9 +30,9 @@ Ndef(\testsine, {|freq=440, amp=0.5, sustain=1, hold=1, pan=0, saw=0.3|
 )
 
 (
-Ndef(\perc).addSpec(\sustain, [0.01, 5.0, \exp]);
-Ndef(\perc).addSpec(\saw, [0.001, 2.0, \exp]);
-Ndef(\perc).addSpec(\hold, [0, 1, \lin, 1]);
+Ndef(\testsine).addSpec(\sustain, [0.01, 5.0, \exp]);
+Ndef(\testsine).addSpec(\saw, [0.001, 2.0, \exp]);
+Ndef(\testsine).addSpec(\hold, [0, 1, \lin, 1]);
 NdefGui(Ndef(\testsine));
 )
 /////////////////////////

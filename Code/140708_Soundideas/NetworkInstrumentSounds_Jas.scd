@@ -20,7 +20,6 @@ Tdef(\WindyDoorbell_Jas, {
 // i like 'windy chimes' but im not sure if its so safe with  headphones because it can grow to dangerously loud levels for the ears...
 (
 
-
 Tdef(\WindyChimesJAS_B8,{
 	rrand(13, 34).do { |i|
 		(	'instrument': 'feedDriftComb',

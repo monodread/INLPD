@@ -16,7 +16,7 @@ q.verbose=false;
 
 (
 s.latency = nil;
-q.trig0tresh = 0.001; // change the sensitive for trigger here
+q.trig0tresh = 0.007; // change the sensitive for trigger here
 q.arduinoOldVals = {0}.dup(4);
 );
 /////////////////////////
@@ -44,31 +44,32 @@ q.myInterface.action = { |... msg| msg.postln;};
 q.myInterface.action = nil; // temporarily erase the action function
 q.myInterface = ArduinoSMS(q.myPort, q.baudrate); // OPEN ONCE
 [-1,2,3].isNegative
-	if(capSenseVals.isNegative && (capSenseVals != (-2))) {
-		capSenseVals = capSenseVals + (2**15);
+	if(digitalVals.isNegative && (digitalVals != (-2))) {
+		digitalVals = digitalVals + (2**15);
 		};
-	capSenseVals = capSenseVals / 2**14;
+	digitalVals = digitalVals / 2**14;
 */
 /////////////////////////
 q.verbose = true;
+q.verbose = false;
 (
 q.myInterface.action = { |... msg|
-	var capSenseVals, trig, trigHold, holdOn;
-	capSenseVals = msg.asInteger; // write them to storage
-	capSenseVals = capSenseVals.abs / (2**14);
-	if(q.verbose) {capSenseVals.round(0.001).postln;};
+	var analogVals, digitalVals, trig, trigHold, holdOn;
+	digitalVals = msg.asInteger.drop(6); // write them to storage
+	digitalVals = digitalVals.abs / (2**8);
+	if(q.verbose) {digitalVals.round(0.001).postln;};
 
-	trig = ((capSenseVals[0] > q.trig0tresh) && (q.arduinoOldVals[0] < q.trig0tresh));
-	trigHold = (capSenseVals[0] > q.trig0tresh);// && (myVals[0] !== q.arduinoOldVals[0]); // alternativer trigger: bleibt an
+	trig = ((digitalVals[0] > q.trig0tresh) && (q.arduinoOldVals[0] < q.trig0tresh));
+	trigHold = (digitalVals[0] > q.trig0tresh);// && (myVals[0] !== q.arduinoOldVals[0]); // alternativer trigger: stays on while touching
 	// Mapping
-//	Ndef(\testsine).set(\freq, \freq.asSpec.map(capSenseVals[0])); // To many low values
-	Ndef(\testsine).set(\freq, capSenseVals[0].linexp(0.00001,10,6300,200));
-	Ndef(\testsine).set(\pan, \pan.asSpec.map(capSenseVals[1]));
+//	Ndef(\testsine).set(\freq, \freq.asSpec.map(digitalVals[0])); // To many low values
+	Ndef(\testsine).set(\freq, digitalVals[0].linexp(0.00001,10, 6300,200));
+	Ndef(\testsine).set(\pan, \pan.asSpec.map(digitalVals[1]));
 	// simple trigger
 //	if(trig)  { "neuer trigger!".postln; Ndef(\testsine).set(\t_trig, 1);};
-	if(trigHold)  { capSenseVals[0].round(0.01).postln;Ndef(\testsine).set(\hold, 1);} {Ndef(\testsine).set(\hold, 0)};
+	if(trigHold)  { digitalVals[0].round(0.01).postln;Ndef(\testsine).set(\hold, 1);} {Ndef(\testsine).set(\hold, 0)};
 
-	q.arduinoOldVals = capSenseVals;
+	q.arduinoOldVals = digitalVals;
 };
 
 Ndef(\testsine).play;

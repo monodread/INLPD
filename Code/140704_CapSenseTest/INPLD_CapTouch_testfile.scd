@@ -13,10 +13,10 @@ q.verbose=false;
 
 (
 s.latency = nil;
-q.trig0thresh = 0.2; // change the sensitivy for trigger1 here
-q.trig1thresh = 0.2; // change the sensitivy for trigger2 here
-q.trig2thresh = 0.2; // change the sensitivy for trigger3 here
-q.trig3thresh = 0.2; // change the sensitivy for trigger4 here
+q.trig0thresh = 0.5; // change the sensitivy for trigger1 here
+q.trig1thresh = 0.5; // change the sensitivy for trigger2 here
+q.trig2thresh = 0.5; // change the sensitivy for trigger3 here
+q.trig3thresh = 0.5; // change the sensitivy for trigger4 here
 q.trig4thresh = 0.2; // change the sensitivy for trigger5 here
 q.trig5thresh = 0.2; // change the sensitivy for trigger6 here
 q.arduinoOldVals = {0}.dup(6); // we use six analog inputs now

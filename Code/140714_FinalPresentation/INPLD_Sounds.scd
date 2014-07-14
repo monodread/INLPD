@@ -12,7 +12,7 @@ TdefAllGui.new;
 Ndef(\testsine).play;
 
 (
-Ndef(\testsine, {|freq=440, amp=0.1, noise=1, reso=1, release=0.5, sustain=1, trigger=1, pan=0, saw=0.3|
+Ndef(\testsine, {|freq=440, amp=0.1, noise=1, reso=0.001, release=0.5, sustain=1, trigger=1, pan=0, saw=0.3|
 	var son, env;
 	env = Env([0.0, 1.0, 0.5, 0.0], [0.01, 0.8, release], -4, 2, 0);
 	env = EnvGen.kr(env, trigger, timeScale:sustain); // t_trig for simple triggers
@@ -22,14 +22,16 @@ Ndef(\testsine, {|freq=440, amp=0.1, noise=1, reso=1, release=0.5, sustain=1, tr
 });
 
 );
+Ndef(\testsine).set(\trigger, 0);
 
-(
+/*(
 Ndef(\testsine).addSpec(\sustain, [0.01, 5.0, \exp]);
 Ndef(\testsine).addSpec(\saw, [0.001, 2.0, \exp]);
 Ndef(\testsine).addSpec(\noise, [0.001, 2.0, \exp]);
 Ndef(\testsine).addSpec(\trigger, [0, 1, \lin, 1]);
 NdefGui(Ndef(\testsine));
 );
+*/
 
 ///////////////////////////////////////////////////////////////////////////
 // WINDY DOOR BELL

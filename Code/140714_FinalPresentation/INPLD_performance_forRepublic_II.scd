@@ -15,7 +15,9 @@ q.verbose=false;
 // create treshhold values and set latency down
 s.latency = nil;
 6.do{|i| var initval=0.3; var name=("trig"++i++"thresh").asSymbol; q.put(name, initval);};
-q.arduinoOldVals = {0}.dup(12);
+// q.arduinoOldVals = {0}.dup(12);
+q.digitalOldVals = {0}.dup(6);
+q.analogOldVals = {0}.dup(6);
 s = r.myServer;
 Ndef.defaultServer = s;
 );
@@ -23,13 +25,18 @@ Ndef.defaultServer = s;
 // create guis for better monitoring
 (
 s.meter;
-Ndef.clear;
-NdefMixer.new(s);
 // PdefAllGui.new;
 // TdefAllGui.new;
-"/Users/monodread/MEINEDATEN/PROJEKTE/programming/github/MyRepos/INLPD/Code/140714_FinalPresentation/INPLD_Sounds.scd".loadDocument;
-// "INPLD_Sounds.scd".loadRelative;
-
+(
+// load sounds and mixer
+Ndef.clear;
+Tdef.all.clear;
+Pdef.all.clear; 
+try {q.mixer.close };
+q.mixer = NdefMixer.new(s);
+// "/Users/monodread/MEINEDATEN/PROJEKTE/programming/github/MyRepos/INLPD/Code/140714_FinalPresentation/INPLD_Sounds.scd".loadDocument;
+"INPLD_Sounds.scd".loadRelative;
+);
 // adding this bit because of Republic Version 3.44
 // function inlining does not work in if statements?
 6.do{ |i| var name=("sound0"++i).asSymbol; q.put(name, 0);};
@@ -39,24 +46,28 @@ q.sound03 = Ndef(\klankinger);
 q.sound04=Pdef(\bubbleDance);
 q.sound05=Tdef(\MorseCode);
 q.sound06=Tdef(\feedDrift);
+
+q.sound01.set(\trigger, 0);
 );
 
 /////////////////////////
 /*
 // THIS IS WHEN HOT SWAPPING THE ARDUINO or in case of error
 
-q.myInterface.action = { |... msg| msg.postln;};
 q.myInterface.action = nil; // temporarily erase the action function
 // re"boot"
 SerialPort.closeAll;
 q.myInterface = ArduinoSMS(q.myPort, q.baudrate); // OPEN ONCE
+q.myInterface.action = { |... msg| msg.postln;};
 */
 /////////////////////////
+6.do{|i| var name = "trig"++i++"thresh"; q.put(name.asSymbol,0.3); };
+
 (
 
 // change the sensitivity for trigger
-q.trig0thresh = 0.2;
-q.trig1thresh = 0.2;
+q.trig0thresh = 0.4;
+q.trig1thresh = 0.3;
 q.trig2thresh = 0.2;
 q.trig3thresh = 0.2;
 q.trig4thresh = 0.2;
@@ -84,7 +95,7 @@ q.myInterface.action = { |... msg|
 	analogVals = (msg.asInteger.keep(6));
 	analogVals = analogVals / 1023; // Normalize Analog Vals
 	digitalVals = msg.asInteger.drop(6);
-	digitalVals = digitalVals.abs / (2**8); // NORMALIZE THE DIGITAL VALS
+	digitalVals = digitalVals.abs / (2**12); // NORMALIZE THE DIGITAL VALS, /2**12 goes up to 7.5 max
 	if(q.verbose) {
 		"DigitalValues: %\n".postf(digitalVals.round(0.001));
 		"Analog Values: %\n".postf(analogVals.round(0.01))
@@ -93,29 +104,30 @@ q.myInterface.action = { |... msg|
 //try {
 		//		Bus(\control, q.controlBus.index).set(analogVals ++ digitalVals);
 		// DEFINE OUR TRIGGERS HERE
-		trig1 = (digitalVals[0] > q.trig0thresh);
-		trig2 = ((digitalVals[1] > q.trig1thresh) && (q.arduinoOldVals[7] < q.trig1thresh));
-		trig3 = (digitalVals[2] > q.trig2thresh && (q.arduinoOldVals[8] < q.trig2thresh));
-		trig4 = ((digitalVals[3] > q.trig3thresh) && (q.arduinoOldVals[9] < q.trig3thresh));
-		trig5 = ((digitalVals[4] > q.trig4thresh) && (q.arduinoOldVals[10] < q.trig4thresh));
-		trig6 = ((digitalVals[5] > q.trig5thresh) && (q.arduinoOldVals[11] < q.trig5thresh));
+		trig1 = (analogVals[0] > q.trig0thresh);
+		trig2 = ((analogVals[1] > q.trig1thresh) && (q.analogOldVals[1] < q.trig1thresh));
+		trig3 = (analogVals[2] > q.trig2thresh && (q.analogOldVals[2] < q.trig2thresh));
+		trig4 = ((analogVals[3] > q.trig3thresh) && (q.analogOldVals[3] < q.trig3thresh));
+		trig5 = ((analogVals[4] > q.trig4thresh) && (q.analogOldVals[4] < q.trig4thresh));
+		trig6 = ((analogVals[5] > q.trig5thresh) && (q.analogOldVals[5] < q.trig5thresh));
 		// TRIGGERING SOUNDS
 
-		if(trig1)  { "Trigger 1! val: %\n".postf(digitalVals[0].round(0.01)); q.sound01.play; q.sound01.set(\trigger, 1);} {q.sound01.set(\trigger, 0)};
+		if(trig1)  { "Trigger 1! val: %\n".postf(analogVals[0].round(0.01)); q.sound01.play; q.sound01.set(\trigger, 1);} {q.sound01.set(\trigger, 0)};
 		// The doorbells
 		if(trig2) { if(q.sound02.isPlaying) {q.sound02.stop} {q.sound02.reset.play; ('instrument': 'press2', 'amp': 0.15, 'p0': 1, 'p1': 0.1, 'sustain': 0.4, 'freq': 4000.rand + 2000, 'ratio': 0.7).play;}; 
-		 "Trigger 2! val: %\n".postf(digitalVals[1].round(0.01));};
+		 "Trigger 2! val: %\n".postf(analogVals[1].round(0.01));};
 		// the drone sound
 		if(trig3) {if(q.sound03.isPlaying) {"stopped".postln; q.sound03.end} {
-			q.sound03.play; q.sound03.set(\trig, 1);  "Trigger 3! val: %\n".postf(digitalVals[2].round(0.01));}
+			q.sound03.play; q.sound03.set(\trig, 1);  "Trigger 3! val: %\n".postf(analogVals[2].round(0.01));}
 		};
 		// the bubble rhythm
-		if(trig4) {  "Trigger 4! val: %\n".postf(digitalVals[3].round(0.01));if(q.sound04.isPlaying) {q.sound04.stop} {"Play Pdef BUBBLE DANCE".postln; q.sound04.play
+		if(trig4) {  "Trigger 4! val: %\n".postf(analogVals[3].round(0.01));if(q.sound04.isPlaying) {q.sound04.stop} {"Play Pdef BUBBLE DANCE".postln; q.sound04.play
 			}
 		};
 		// the woodpecker sound
-		if(trig5) {   "Trigger 5! val: %\n".postf(digitalVals[4].round(0.01));
+		if(trig5) {   "Trigger 5! val: %\n".postf(analogVals[4].round(0.01));
 						if(q.sound05.isPlaying) {q.sound05.stop} {q.sound05.reset.play};
+						// play one sound as notifier
 			(instrument: \delta_demand2,
 				start: 0.05,
 				grow: 0.93,
@@ -127,62 +139,61 @@ q.myInterface.action = { |... msg|
 		};
 		// the feed Drift Comb
 		if(trig6) {  if(q.sound06.isPlaying) {q.sound06.stop} {q.sound06.reset.play;
-			 "Trigger 6! val: %\n".postf(digitalVals[5].round(0.01));
 			(instrument: \feedDriftComb, freq: 1500, sustain: 0.5, amp: 0.1, driftFreq: 20).play;
 			};
-			"Trigger 6 - FeedDrift".postln;
+			"Trigger 6! val: %\n".postf(analogVals[5].round(0.01));
 		};
 
 		// MODIFYING SOUNDS
 		q.sound01.set(
-			\freq, analogVals[0].linexp(0,1,80, 6000),
-			\saw, analogVals[1].linexp(0,1,0.01,5),
-			\noise, analogVals[2].linexp(0,1,0.1,2),
-			\reso, analogVals[3].linexp(0,1,0.001,1)
+			\freq, digitalVals[0].linlin(0.001,5,80, 6000),
+			\saw, digitalVals[1].linlin(0.001,5,0.01,5),
+			\noise, digitalVals[2].linlin(0,6,0.1,2),
+			\reso, digitalVals[3].linlin(0,6,0.001,1)
 		);
-
 		q.sound02.set(
-			\freqscale, (analogVals[0].linlin(0,1,1,0.1)),
-			// \ratio, analogVals[1].linexp(0,1, 2, 0.01),
-			\sustain, analogVals[3].linlin(0,1, 1.3, 0.1),
-			\noise, analogVals[2].linlin(0,1,0.1,2),
-			\wait, analogVals[3].linlin(0,1, 1, 0.1)
+			\freqscale, digitalVals[0].linlin(0,6,1,0.1),
+			// \ratio, digitalVals[1].linlin(0,6, 2, 0.01),
+			\sustain, digitalVals[3].linlin(0,6, 1, 0.1),
+			\noise, digitalVals[2].linlin(0.0,2,0.1,2),
+			\wait, digitalVals[3].linlin(0,6, 1, 0.1)
 		);
 		q.sound03.set(
-			\ringscale, analogVals[1].linlin(0,1, 0.1, 100),
-			\bassvol, analogVals[2].linexp(0,1, 0.001, 0.5),
-			\osc, analogVals[0].linexp(0,1, 0.3, 12),
-			\ampl, analogVals[3].linexp(0,1,0.1,1)
+			\ringscale, digitalVals[1].linlin(0.001,7, 0.1, 100),
+			\bassvol, digitalVals[2].linlin(0,6, 0.001, 0.5),
+			\osc, digitalVals[0].linlin(0,6, 0.3, 12),
+			\ampl, digitalVals[3].linlin(0,6,0.1,1)
 		);
 		Pbindef(\bubbleDance,
-			'sustain', analogVals[0].linexp(0,1,0.1,2),
+			'sustain', digitalVals[0].linlin(0,6,0.1,2),
 			// Pn(Pfunc{ var valArray=q.controlBus.get; valArray[0]}, inf) + 0.1,
 			//Prand([0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.01, 0.02, 0.03],60),
-			'freq', Prand([1000, 2000, 3000, 3500], 120) * analogVals[1].linlin(0,1,
+			'freq', Prand([1000, 2000, 3000, 3500], 120) * digitalVals[1].linlin(0,6,
 				2, 0.1),
-			'rise', Prand([4, 8, 10], 120) * analogVals[2].linlin(0,1,0.5,5),
+			'rise', Prand([4, 8, 10], 120) * digitalVals[2].linlin(0,6,0.5,5),
 			//	'where', Pseq([0, 1, 2, 3], inf),
-			'dur', Pseq([0.1, 0.4, 0.2, 0.1], inf) * analogVals[3].linlin(0,1,2,0.2)
+			'dur', Pseq([0.1, 0.4, 0.2, 0.1], inf) * digitalVals[3].linlin(0,6,3,0.2)
 		).trace;
 
 		q.sound05.set(
-			\start, analogVals[0].linexp(0,1,0.01,0.1),
-			\grow, analogVals[1].linlin(0,1,0.9,2.2),
-			\num, analogVals[2].linlin(0,1,60,120),
-			\freq, analogVals[3].linexp(0,1,600,2000)
+			\start, digitalVals[0].linlin(0,6,0.01,0.1),
+			\grow, digitalVals[1].linlin(0,6,0.9,2.2),
+			\num, digitalVals[2].linlin(0,6,60,220),
+			\freq, digitalVals[3].linlin(0,6,600,4000)
 		);
 
 		q.sound06.set(
-			\freq, analogVals[0].linexp(0,1,800,3000),
-			\sustain, analogVals[1].linexp(0,1,0.1,1),
+			\freq, digitalVals[0].linlin(0,6,800,10000),
+			\sustain, digitalVals[1].linlin(0,6,0.1,2),
 			// \amp, 0.1,
-			\driftFreq, analogVals[2].linlin(0,1,10,30),
-			\dur, analogVals[3].linlin(0,1,0.1,1)
+			\driftFreq, digitalVals[2].linlin(0,6,10,100),
+			\dur, digitalVals[3].linlin(0,6,0.05,1)
 		);
 
 
-
 		q.arduinoOldVals = analogVals ++ digitalVals;
+		q.analogOldVals = analogVals;
+		q.digitalOldVals = q.digitalOldVals;
 //	} { "There was an exception!\n".postln; msg.postln; }
 };
 

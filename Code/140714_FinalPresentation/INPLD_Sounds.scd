@@ -12,7 +12,7 @@ TdefAllGui.new;
 Ndef(\testsine).play;
 
 (
-Ndef(\testsine, {|freq=440, amp=0.1, noise=1, reso=0.001, release=0.5, sustain=1, trigger=1, pan=0, saw=0.3|
+Ndef(\testsine, {|freq=110, amp=0.1, noise=1, reso=0.001, release=0.5, sustain=1, trigger=1, pan=0, saw=0.3|
 	var son, env;
 	env = Env([0.0, 1.0, 0.5, 0.0], [0.01, 0.8, release], -4, 2, 0);
 	env = EnvGen.kr(env, trigger, timeScale:sustain); // t_trig for simple triggers
@@ -22,7 +22,7 @@ Ndef(\testsine, {|freq=440, amp=0.1, noise=1, reso=0.001, release=0.5, sustain=1
 });
 
 );
-Ndef(\testsine).set(\trigger, 0);
+
 
 /*(
 Ndef(\testsine).addSpec(\sustain, [0.01, 5.0, \exp]);
@@ -120,7 +120,7 @@ Pdef(\bubbleDance,
 // MorseCode
 
 //Tdef(\MorseCode).gui;
-Tdef(\MorseCode).set(\start, 0.05, \grow, 0.93, \num, 30, \freq, 1000, \rise, 6, \dcy, 0.01, \amp, 0.3);
+Tdef(\MorseCode).set(\start, 0.05, \grow, 0.93, \num, 30, \freq, 1000, \rise, 6, \dcy, 0.01, \amp, 0.2);
 
 (
 Tdef(\MorseCode, { |env|
@@ -218,7 +218,7 @@ SynthDef('delta_demand2', { arg out=0, start=0.05, grow=0.93, num=20, freq=1000,
 	OffsetOut.ar(out,
 		Ringz.ar(
 			TDuty.ar(Dgeom(start, grow, num), 0, 0.5, 2),
-			freq,
+			freq!2,
 			dcy, amp
 		)
 	)
@@ -260,9 +260,10 @@ SynthDef('feedDriftComb2', { arg freq = 3500, sustain= 2.0, amp = 1, driftFreq=2
 		*  EnvGen.kr(env, levelScale: amp, timeScale: sustain, doneAction: 2);
 		);
 }).add;
-)
+);
 
 ///////////////////////////////////////////////////////////////////////////
-
+Ndef(\testsine).set(\trigger, 1);
+Ndef(\testsine).set(\trigger, 0);
 
 );

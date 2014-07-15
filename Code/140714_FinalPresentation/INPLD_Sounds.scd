@@ -17,7 +17,7 @@ Ndef(\testsine, {|freq=110, amp=0.1, noise=1, reso=0.001, release=0.5, sustain=1
 	env = Env([0.0, 1.0, 0.5, 0.0], [0.01, 0.8, release], -4, 2, 0);
 	env = EnvGen.kr(env, trigger, timeScale:sustain); // t_trig for simple triggers
 	son = Mix((SinOsc.ar(freq) + Saw.ar(freq, saw)) + WhiteNoise.ar(noise)).tanh * env;
-	son = Ringz.ar(son, freq, reso);
+	son = Ringz.ar(son, freq, reso).softclip;
 	Pan2.ar(LeakDC.ar(son) * amp, pan)
 });
 
@@ -138,7 +138,7 @@ Tdef(\MorseCode, { |env|
 ///////////////////////////////////////////////////////////////////////////
 // feed Drift Comb!
 
-Tdef(\feedDrift).set(\freq, 2000, \sustain, 0.4, \amp, 0.1, \driftFreq, 20, 1, \dur, 1);
+Tdef(\feedDrift).set(\freq, 2000, \sustain, 0.4, \amp, 0.01, \driftFreq, 20, 1, \dur, 1);
 // Tdef(\feedDrift).gui;
 // fire one off
 (instrument: \feedDriftComb, freq: 1500, sustain: 0.5, amp: 0.1, driftFreq: 20).play;
